@@ -1,5 +1,5 @@
 import { reactive } from "../src/reactivity/reactive";
-// import { effect } from "../src/reactivity/effect";
+import { effect } from "../src/reactivity/effect";
 
 describe('reactivity', () => {
     test('reactive() ', () => {
@@ -9,74 +9,74 @@ describe('reactivity', () => {
         expect(original.foo).toBe('foo~~~')
     });
 
-    // it('effect', () => {
-    //     let dummy
-    //     const counter = reactive({ num: 0 })
-    //     const fnSpy = jest.fn(() => {
-    //         dummy = counter.num
-    //     })
-    //     effect(fnSpy)
+    it('effect', () => {
+        let dummy
+        const counter = reactive({ num: 0 })
+        const fnSpy = jest.fn(() => {
+            dummy = counter.num
+        })
+        effect(fnSpy)
 
-    //     expect(fnSpy).toHaveBeenCalledTimes(1)
-    //     expect(dummy).toBe(0)
+        expect(fnSpy).toHaveBeenCalledTimes(1)
+        expect(dummy).toBe(0)
 
-    //     counter.num = 1
-    //     expect(fnSpy).toHaveBeenCalledTimes(2)
-    //     expect(dummy).toBe(1)
-    // })
+        counter.num = 1
+        expect(fnSpy).toHaveBeenCalledTimes(2)
+        expect(dummy).toBe(1)
+    })
 
-    // it('should observe multiple properties', () => {
-    //     let dummy
-    //     const counter = reactive({ num1: 0, num2: 0 })
-    //     effect(() => (dummy = counter.num1 + counter.num1 + counter.num2))
+    it('should observe multiple properties', () => {
+        let dummy
+        const counter = reactive({ num1: 0, num2: 0 })
+        effect(() => (dummy = counter.num1 + counter.num1 + counter.num2))
 
-    //     expect(dummy).toBe(0)
-    //     counter.num1 = counter.num2 = 7
-    //     expect(dummy).toBe(21)
-    // })
+        expect(dummy).toBe(0)
+        counter.num1 = counter.num2 = 7
+        expect(dummy).toBe(21)
+    })
 
-    // it('should handle multiple effects', () => {
-    //     let dummy1, dummy2
-    //     const counter = reactive({ num: 0 })
-    //     effect(() => (dummy1 = counter.num))
-    //     effect(() => (dummy2 = counter.num))
+    it('should handle multiple effects', () => {
+        let dummy1, dummy2
+        const counter = reactive({ num: 0 })
+        effect(() => (dummy1 = counter.num))
+        effect(() => (dummy2 = counter.num))
 
-    //     expect(dummy1).toBe(0)
-    //     expect(dummy2).toBe(0)
-    //     counter.num++
-    //     expect(dummy1).toBe(1)
-    //     expect(dummy2).toBe(1)
-    // })
+        expect(dummy1).toBe(0)
+        expect(dummy2).toBe(0)
+        counter.num++
+        expect(dummy1).toBe(1)
+        expect(dummy2).toBe(1)
+    })
 
-    // it('effect should linked to the exact key', () => {
-    //     const observe = reactive({ foo: 'foo', bar: 'bar' })
-    //     const fnSpy = jest.fn(() => {
-    //         observe.foo
-    //     });
+    it('effect should linked to the exact key', () => {
+        const observe = reactive({ foo: 'foo', bar: 'bar' })
+        const fnSpy = jest.fn(() => {
+            observe.foo
+        });
 
-    //     effect(fnSpy)
-    //     observe.bar = 'barrr'
-    //     observe.foo = 'foooo'
-    //     expect(fnSpy).toHaveBeenCalledTimes(2)
-    // });
+        effect(fnSpy)
+        observe.bar = 'barrr'
+        observe.foo = 'foooo'
+        expect(fnSpy).toHaveBeenCalledTimes(2)
+    });
 
-    // it("调度执行", () => {
-    //     const obj = reactive({ foo: 1 });
-    //     const arr = [];
-    //     jest.useFakeTimers(); // 开启模拟定时器
-    //     effect(() => arr.push(obj.foo), {
-    //         scheduler(fn) {
-    //             setTimeout(fn);
-    //         },
-    //     });
-    //     obj.foo++;
-    //     arr.push("over");
+    it("调度执行", () => {
+        const obj = reactive({ foo: 1 });
+        const arr = [];
+        jest.useFakeTimers(); // 开启模拟定时器
+        effect(() => arr.push(obj.foo), {
+            scheduler(fn) {
+                setTimeout(fn);
+            },
+        });
+        obj.foo++;
+        arr.push("over");
 
-    //     jest.runAllTimers(); // 等待所有定时器执行
-    //     expect(arr[0]).toBe(1);
-    //     expect(arr[1]).toBe("over");
-    //     expect(arr[2]).toBe(2);
-    // });
+        jest.runAllTimers(); // 等待所有定时器执行
+        expect(arr[0]).toBe(1);
+        expect(arr[1]).toBe("over");
+        expect(arr[2]).toBe(2);
+    });
 
     // it("should be nested", () => {
     //     const obj = reactive({ foo: "foo", bar: "bar" });
