@@ -78,24 +78,24 @@ describe('reactivity', () => {
         expect(arr[2]).toBe(2);
     });
 
-    // it("should be nested", () => {
-    //     const obj = reactive({ foo: "foo", bar: "bar" });
-    //     const arr = []
-    //     const mockFn1 = jest.fn(() => {
-    //         arr.push(obj.bar)
-    //     });
-    //     const mockFn2 = jest.fn(() => {
-    //         // mockFn1嵌套在mockFn2内部，obj.bar -> mockFn1
-    //         effect(mockFn1);
-    //         arr.push(obj.foo)
-    //     });
-    //     // mockFn2包含了mockFn1，obj.foo -> mockFn2
-    //     effect(mockFn2)
-    //     // 因此希望内部mockFn1先执行，arr[0]是bar，arr[1]是foo
-    //     expect(arr[0]).toBe('bar')
-    //     expect(arr[1]).toBe('foo')
-    //     // 修改foo，希望触发mockFn2，再次添加obj.foo
-    //     obj.foo = "fooooo";
-    //     expect(arr[3]).toBe('fooooo');
-    // });
+    it("should be nested", () => {
+        const obj = reactive({ foo: "foo", bar: "bar" });
+        const arr = []
+        const mockFn1 = jest.fn(() => {
+            arr.push(obj.bar)
+        });
+        const mockFn2 = jest.fn(() => {
+            // mockFn1嵌套在mockFn2内部，obj.bar -> mockFn1
+            effect(mockFn1);
+            arr.push(obj.foo)
+        });
+        // mockFn2包含了mockFn1，obj.foo -> mockFn2
+        effect(mockFn2)
+        // 因此希望内部mockFn1先执行，arr[0]是bar，arr[1]是foo
+        expect(arr[0]).toBe('bar')
+        expect(arr[1]).toBe('foo')
+        // 修改foo，希望触发mockFn2，再次添加obj.foo
+        obj.foo = "fooooo";
+        expect(arr[3]).toBe('fooooo');
+    });
 });

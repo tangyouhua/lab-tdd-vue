@@ -2,11 +2,15 @@
 export let activeEffect
 // effect(fn, options)
 // 注册副作用函数
+const effectStack = [] // 支持嵌套
 export function effect(fn, options = {}) {
     // 封装一个effectFn用于扩展功能
     const effectFn = () => {
         activeEffect = effectFn
+        effectStack.push(effectFn)
         fn()
+        effectStack.pop()
+        activeEffect = effectStack[effectStack.length - 1]
     }
     effectFn.options = options // 增加选项以备trigger时使用
     effectFn()
