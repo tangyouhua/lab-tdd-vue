@@ -1,3 +1,4 @@
+import { generate } from "../src/compiler/generate"
 import { parse } from "../src/compiler/parse"
 describe("compiler", () => {
     it("parse element", () => {
@@ -65,5 +66,83 @@ describe("compiler", () => {
             children: [],
             isUnary: false
         })
+    })
+
+    it('parse interpolation', () => {
+        const template = '<div>{{foo}}</div>'
+        const ast = parse(template)
+        expect(ast[0]).toEqual({
+            tag: 'div',
+            type: 'Element',
+            props: [],
+            children: [
+                {
+                    type: 'Interpolation',
+                    content: {
+                        type: 'Expression',
+                        content: 'foo'
+                    }
+                }
+            ],
+            isUnary: false
+        })
+    })
+
+    it('generate element with text', () => {
+        const ast = [
+            {
+                type: 'Element',
+                tag: 'div',
+                props: [],
+                isUnary: false,
+                children: [{ type: 'Text', content: 'foo' }]
+            }
+        ]
+        const code = generate(ast)
+        expect(code).toMatch(`return this._c('div',null,'foo')`)
+    })
+
+    it('generate element with expression', () => {
+        const ast = [
+            {
+                type: 'Element',
+                tag: 'div',
+                props: [],
+                isUnary: false,
+                children: [
+                    {
+                        type: 'Interpolation',
+                        content: { type: 'Expression', content: 'foo' }
+                    }
+                ]
+            }
+        ]
+        const code = generate(ast)
+        expect(code).toMatch(`return this._c('div',null,this.foo)`)
+    })
+
+    it('generate element with multi children', () => {
+        const ast = [
+            {
+                type: 'Element',
+                tag: 'div',
+                props: [],
+                isUnary: false,
+                children: [
+                    { type: 'Text', content: 'foo' },
+                    {
+                        type: 'Element',
+                        tag: 'span',
+                        props: [],
+                        isUnary: false,
+                        children: [{ type: 'Text', content: 'bar' }]
+                    }
+                ]
+            }
+        ]
+        const code = generate(ast)
+        expect(code).toMatch(
+            `return this._c('div',null,[this._v('foo'),this._c('span',null,'bar')])`
+        )
     })
 })
