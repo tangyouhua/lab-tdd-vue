@@ -1,0 +1,38 @@
+<html>
+
+<body>
+    <div id="app">
+        <input /">
+        <button></button>
+    </div>
+    <script>
+        // data
+        const data = {
+            message: 'Hello Vue3!!'
+        }
+
+        // view
+        const input = document.querySelector('input')
+        const button = document.querySelector('button')
+
+        input.addEventListener('keyup', function () {
+            data.message = this.value
+            update()
+        })
+        button.addEventListener('click', function () {
+            data.message = data.message.split('').reverse().join('')
+            update()
+        })
+
+        // update view
+        function update() {
+            button.innerHTML = data.message
+            input.value = data.message
+        }
+
+        // init
+        update()
+    </script>
+</body>
+
+</html>

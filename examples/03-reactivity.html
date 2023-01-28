@@ -1,0 +1,36 @@
+<html>
+
+<body>
+    <div id="app">
+        <input />
+        <button></button>
+    </div>
+    <script src="../build/reactivity.js"></script>
+    <script>
+        const { reactive, effect } = Reactivity
+        // use reactive data
+        const data = reactive({
+            message: 'Hello Vue3!!'
+        })
+
+        const button = document.querySelector('button')
+        const input = document.querySelector('input')
+
+        function update() {
+            button.innerHTML = data.message
+            input.value = data.message
+        }
+
+        // register update as effect fn
+        effect(update)
+
+        input.addEventListener('keyup', function () {
+            data.message = this.value
+        })
+        button.addEventListener('click', function () {
+            data.message = data.message.split('').reverse().join('')
+        })
+    </script>
+</body>
+
+</html>
